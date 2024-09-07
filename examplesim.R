@@ -342,13 +342,12 @@ plot20 <- make_best_plot(seq(0, 50, 5), c(1, 10, 20, 30, 40, 50, 60, 70, 80), 30
 pdf(file = "plots/bigplot0_1cap.pdf", width = 5, height = 4)
 plot14 + 
   scale_color_manual(values = c("adaptive" = "hotpink", "optimal fixed"="dodgerblue2", "fixed"="green3"), aesthetics = c("color", "fill")) + 
-  scale_shape_manual(values = c("adaptive" = 15, "optimal fixed" = 16, "fixed"=17)) + geom_encircle(aes(fill=best),alpha=0.3)
+  scale_shape_manual(values = c("adaptive" = 15, "optimal fixed" = 16, "fixed"=17))
 dev.off()
 pdf(file = "plots/bigplot0_3cap.pdf", width = 5, height = 4)
 plot15 + 
   scale_color_manual(values = c("adaptive" = "hotpink", "optimal fixed"="dodgerblue2", "fixed"="green3")) + 
-  scale_shape_manual(values = c("adaptive" = 15, "optimal fixed" = 16, "fixed"=17)) + 
-  geom_encircle(data=plot15$data[plot15$data$best=="RAR"], aes(x=theta, y=sigma))
+  scale_shape_manual(values = c("adaptive" = 15, "optimal fixed" = 16, "fixed"=17))
 dev.off()
 pdf(file = "plots/bigplot0_5cap.pdf", width = 5, height = 4)
 plot16 + 
