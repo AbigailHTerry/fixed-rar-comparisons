@@ -16,7 +16,7 @@ get_theta <- function(bayesian, theta_mean, theta_sd){
 }
 
 # calculate gain of fixed sampling trial
-gain_fixed <- function(mu_x, mu_y, sigma, a, m, r_x, n){
+gain_fixed <- function(mu_x, mu_y, sigma, a, m, r_x, n, theta_sd=3){
   theta <- rnorm(1, mean=mu_x-mu_y, sd=theta_sd)
   theta_hat_sd <- sqrt((sigma^2)/(n*r_x*(1-r_x)))
   total_gain = 0
@@ -39,7 +39,7 @@ gain_fixed <- function(mu_x, mu_y, sigma, a, m, r_x, n){
 }
 
 # calculate optimal gain for fixed sampling trial
-gain_fixed_opt <- function(mu_x, mu_y, sigma, a, m, n, cap, ret=F){
+gain_fixed_opt <- function(mu_x, mu_y, sigma, a, m, n, cap, ret=F, theta_sd=3){
   opt_gain <- 0
   opt_r_x <- 0
   if (cap==T){
@@ -76,7 +76,7 @@ gain_fixed_opt <- function(mu_x, mu_y, sigma, a, m, n, cap, ret=F){
 }
 
 #calculate gain of RAR trial
-gain_adaptive <- function(mu_x, mu_y, sigma, a, m, n){
+gain_adaptive <- function(mu_x, mu_y, sigma, a, m, n, theta_sd=3){
   total_gain <- 0
   matrix <- matrix(NA, nrow = m, ncol = 5)
   for (i in 1:m){
@@ -120,7 +120,7 @@ loop_compare <- function(mu_x, mu_y, sigma, m, n, r_x, gran, cap){
 }
 
 # function to compare all fixed ratios
-loop_compare_fast_plot <- function(mu_x, mu_y, sigma, m, n, r_x, gran, cap, opt){
+loop_compare_fast_plot <- function(mu_x, mu_y, sigma, m, n, r_x, gran, cap, opt, theta_sd=3){
   weights <- seq(from = 0, to = 1, by = gran)
   comp1_fixed_vec <- rep(0, m)
   comp2_fixed_vec <- rep(0, m)
@@ -180,7 +180,7 @@ loop_compare_fast_plot <- function(mu_x, mu_y, sigma, m, n, r_x, gran, cap, opt)
   return(plot)
 }
 
-loop_compare_fast_plot_best_trial <- function(theta_mean, sigma, m, n, a, cap, opt){
+loop_compare_fast_plot_best_trial <- function(theta_mean, sigma, m, n, a, cap, opt, theta_sd=3){
   comp1_fixed_vec <- rep(0, m)
   comp2_fixed_vec <- rep(0.5, m)
   comp1_rar_vec <- rep(0, m)
@@ -223,7 +223,7 @@ loop_compare_fast_plot_best_trial <- function(theta_mean, sigma, m, n, a, cap, o
   return(best)
 }
 
-get_comps <- function(thetas, sigmas, m, n, a, theta_sd){
+get_comps <- function(thetas, sigmas, m, n, a, theta_sd=3){
   param_space <- matrix(NA, nrow=length(thetas), ncol=length(sigmas))
   comp1_fixed_vec <- rep(0, m)
   comp2_fixed_vec <- rep(0.5, m)
@@ -272,22 +272,22 @@ get_comps <- function(thetas, sigmas, m, n, a, theta_sd){
 
 make_best_plot <- function(thetas, sigmas, m, n, a, cap, opt){
   param_space <- matrix(NA, nrow=length(thetas), ncol=length(sigmas))
-  theta <- rep(thetas, each=length(sigmas))
-  sigma <- rep(sigmas, times=length(thetas))
-  best <- rep(0, length(theta))
+  mu_theta <- rep(thetas, each=length(sigmas))
+  sigma_p <- rep(sigmas, times=length(thetas))
+  best <- rep(0, length(mu_theta))
   for (i in 1:length(best)){
     #print(loop_compare_fast_plot_best_trial(theta[i], sigma[i], m, n, a))
-    best[i] <- loop_compare_fast_plot_best_trial(theta[i], sigma[i], m, n, a, cap, opt)
+    best[i] <- loop_compare_fast_plot_best_trial(mu_theta[i], sigma_p[i], m, n, a, cap, opt)
     print(i)
   }
-  df <- data.frame(theta, sigma, best)
+  df <- data.frame(mu_theta, sigma_p, best)
   #return(df)
-  plot <- ggplot(df) + geom_point(aes(x=theta, y=sigma, col=best, shape = best)) + 
+  plot <- ggplot(df) + geom_point(aes(x=mu_theta, y=sigma_p, col=best, shape = best)) + 
     labs(col="Best trial design", shape="Best trial design")
   return(plot)
 }
 
-fixed_compare <- function(thetas, sigmas, m, n, theta_sd){
+fixed_compare <- function(thetas, sigmas, m, n, theta_sd=3){
   theta_plot <- rep(thetas, each=length(sigmas))
   sigma_plot <- rep(sigmas, times=length(thetas))
   comp1_plot <- rep(0, length(theta_plot))
@@ -312,7 +312,7 @@ fixed_compare <- function(thetas, sigmas, m, n, theta_sd){
   return(res_df)
 }
 
-rar_compare <- function(thetas, sigmas, m, n, theta_sd){
+rar_compare <- function(thetas, sigmas, m, n, theta_sd=3){
   theta_plot <- rep(thetas, each=length(sigmas))
   sigma_plot <- rep(sigmas, times=length(thetas))
   comp1_plot <- rep(0, length(theta_plot))

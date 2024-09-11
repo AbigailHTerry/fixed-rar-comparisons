@@ -1,5 +1,7 @@
 source("functions.R")
 library(ggpmisc)
+plot_rules <- theme(panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5), 
+                    legend.position = "bottom", plot.margin = unit(c(t=0.2, r=1, b=0.2, l=1), "cm"))
 
 mu_x <- 20
 mu_y <- 10
@@ -44,8 +46,6 @@ trial_sim1 <- run_trial(trial_spec=trial_setup1, seed=18, sparse=F)
 print(trial_sim1$trial_res$final_alloc[1])
 print(trial_sim1$trial_res$ns_all[1])
 print(trial_sim1$all_looks[[1]]$sum_ys[1]-trial_sim1$all_looks[[1]]$sum_ys[2])
-plot_rules <- theme(panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5), 
-                    legend.position = "bottom", plot.margin = unit(c(t=0.2, r=1, b=0.2, l=1), "cm"))
 
 pdf(file = "plots/rarex1alln.pdf", width = 5, height = 4)
 plot_history(trial_sim1, x_value = "total n", y_value = "n all") + plot_rules
